@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hộp Kỷ Niệm Lớp Chúng Mình</title>
+    <style>
+        /* --- Reset & Nền Động --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #090d16, #111827, #1f122b); 
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* --- Cấu Trúc Khung Kính (Glassmorphism) --- */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 40px 30px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- MÀN HÌNH NHẬP TÊN --- */
+        #login-screen {
+            text-align: center;
+            /* Đổi opacity mặc định về 0 để chờ popup tắt mới hiện */
+            opacity: 0; 
+            display: none; 
+            transform: translateY(20px);
+        }
+
+        .logo-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #38bdf8, #c084fc, #f43f5e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1.1rem;
+            outline: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .name-input:focus {
+            border-color: #c084fc;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(45deg, #38bdf8, #c084fc);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.4);
+        }
+
+        /* --- POPUP THÔNG BÁO --- */
+        #intro-popup {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+        }
+
+        .popup-box {
+            text-align: center;
+            padding: 30px 25px;
+        }
+
+        .popup-box h2 {
+            font-size: 1.5rem;
+            color: #f43f5e;
+            margin-bottom: 15px;
+        }
+
+        .popup-box p {
+            color: #e2e8f0;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* --- MÀN HÌNH CHỜ (LOADING) --- */
+        #loading-screen {
+            display: none; 
+            opacity: 0;
+            transform: translateY(10px);
+            text-align: center;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-left-color: #38bdf8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        /* --- MÀN HÌNH TƯỜNG CÁ NHÂN --- */
+        #profile-screen {
+            display: none; 
+            opacity: 0;
+            transform: translateY(20px);
+            text-align: center;
+        }
+
+        .avatar-box {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(45deg, #f43f5e, #c084fc);
+            position: relative;
+            z-index: 2;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #111827;
+        }
+
+        .user-name, .user-tag, .info-section, .extra-info {
+            position: relative;
+            z-index: 2;
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .user-tag {
+            font-size: 0.85rem;
+            color: #38bdf8;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .extra-info {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .info-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: none;
+        }
+
+        .info-section {
+            text-align: left;
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            border-radius: 14px;
+            border-left: 4px solid #38bdf8;
+        }
+
+        .info-section.personality {
+            border-left-color: #c084fc;
+        }
+
+        .info-section.album-section {
+            border-left-color: #f43f5e;
+            padding-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .section-content {
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .album-grid img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .album-grid img:hover {
+            transform: scale(1.05);
+            border-color: #f43f5e;
+        }
+
+        .back-btn {
+            position: relative;
+            z-index: 2;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #94a3b8;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            color: #fff;
+            border-color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- NÚT MESSENGER NỔI --- */
+        .mess-float {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 60px;
+            height: 60px;
+            background: #0084ff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 132, 255, 0.4);
+            z-index: 999;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .mess-float:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 132, 255, 0.6);
+        }
+
+        .mess-float svg {
+            width: 35px;
+            height: 35px;
+            fill: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Thẻ audio ẩn để phát nhạc -->
+    <audio id="audioPlayer" loop>
+        <source id="audioSource" src="" type="audio/mpeg">
+    </audio>
+
+    <!-- NÚT MESSENGER GÓC DƯỚI -->
+    <a href="https://www.facebook.com/lnhat001" target="_blank" class="mess-float" title="Chat với Admin LNHAT">
+        <svg viewBox="0 0 256 256">
+            <path d="M128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm8,111.43-26.68-28.45a16,16,0,0,0-23.47-.07L56.78,137.49a8,8,0,0,0,11.53,11l26.68-28.45a16,16,0,0,1,23.47.07l29.07,30.58a8,8,0,0,0,11.53,11Z"></path>
+        </svg>
+    </a>
+
+    <!-- POPUP THÔNG BÁO BAN ĐẦU -->
+    <div id="intro-popup">
+        <div class="glass-card popup-box">
+            <h2>📢 Admin</h2>
+            <p>Đây chỉ là quan điểm riêng mục đích lưu nhớ kỉ niệm và tạo tiếng cười, không có mục đích bạo hành mạng bất cứ ai.<br>Ad xin cảm ơn!</p>
+            <button class="submit-btn" onclick="acceptIntro()">Đã hiểu</button>
+        </div>
+    </div>
+
+    <!-- MÀN HÌNH NHẬP TÊN -->
+    <div class="glass-card" id="login-screen">
+        <h1 class="logo-title">LNHAT</h1>
+        <p class="subtitle">Đây chỉ là quan điểm riêng mục đích lưu nhớ kỉ niệm và tạo tiếng cười, không có mục đích bạo hành mạng bất cứ ai </p>
+        
+        <div class="input-group">
+            <input type="text" id="nameInput" class="name-input" placeholder="Nhập Họ và Tên..." autocomplete="off">
+        </div>
+        
+        <button class="submit-btn" onclick="handleLogin()">Khám Phá Ngay</button>
+    </div>
+
+    <!-- MÀN HÌNH LOADING CHUYỂN TIẾP -->
+    <div class="glass-card" id="loading-screen">
+        <h2 class="logo-title" id="welcome-text" style="font-size: 1.8rem; margin-bottom: 20px;"></h2>
+        <div class="spinner"></div>
+        <p style="color: #94a3b8; font-style: italic; margin-top: 15px;">Đang tải hồ sơ & chuẩn bị âm nhạc...</p>
+    </div>
+
+    <!-- MÀN HÌNH TƯỜNG CÁ NHÂN -->
+    <div class="glass-card" id="profile-screen">
+        <div class="avatar-box">
+            <img src="" alt="Avatar" class="avatar" id="userAvatar">
+        </div>
+        <h2 class="user-name" id="userName"></h2>
+        <div class="user-tag" id="userTag"></div>
+
+        <div class="extra-info">
+            <div class="info-badge" id="userDob"></div>
+            <div class="info-badge" id="userPhysical"></div>
+        </div>
+
+        <div class="info-section">
+            <div class="section-title">💪 Điểm mạnh nổi bật</div>
+            <div class="section-content" id="userStrengths"></div>
+        </div>
+
+        <div class="info-section personality">
+            <div class="section-title">✨ Cá tính đặc trưng</div>
+            <div class="section-content" id="userPersonality"></div>
+        </div>
+
+        <div class="info-section album-section">
+            <div class="section-title">📸 Album Kỷ Niệm</div>
+            <div class="album-grid" id="userAlbum">
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="goBack()">Quay lại</button>
+    </div>
+
+    <script>
+        // --- DÁN LINK MP3 CHO MÀN HÌNH CHÍNH TẠI ĐÂY ---
+        const LINK_NHAC_CHUNG = "https://files.catbox.moe/yh09f7.mp3"; // Ví dụ: "https://.../nhac-nen-chung.mp3"
+
+        // --- DATABASE GIỮ NGUYÊN ---
+        const classDatabase = [
+            { hoTen: "Nguyễn Hoàng Gia Bảo", bietDanh: "Vua check map", anhDaiDien: "https://i.postimg.cc/3RYFcd0J/6858F645-D84D-4D2E-AF87-3EDD913C45FC.jpg", ngaySinh: "", theChat: "", diemManh: "không học cũng trên trung bình nhìn hiền lành dễ thân, có chút hơi trẻ trâu tý ", caTinh: "thích chơi fc, thích check var, không bao giờ ghi bài đầy đủ ", anhNen: "https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg", albumAnh: ["https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg" , "https://i.postimg.cc/g2cdmD91/2340C2ED-F997-418B-B1B9-8EA7FBB3D4AD.jpg" , "https://i.postimg.cc/DwfFngVN/2DBAE040-0F7E-4B78-958C-99E730F5DAF5.jpg" , "https://i.postimg.cc/4x4Zs5kk/67237B25-F603-49B1-813B-03B6FC75C4F0.jpg"], nhacNen: "https://files.catbox.moe/s43mjw.mp3" },
+            { hoTen: "Trần Gia Bảo", bietDanh: "thợ săn loli", anhDaiDien: "https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg", ngaySinh: "27/04/2012", theChat: "1m72 65kg(cả bỉm)", diemManh: "đẹp trai, to cao, có tính hài hước cao, tâm diểm nói chuyện", caTinh: "vua nước bọt, đối thủ nặng kí", anhNen: "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg", albumAnh: ["https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg" , "https://i.postimg.cc/YSNDqz8n/BC327024-2E4C-42DB-BB52-38E1711D9408.jpg" , "https://i.postimg.cc/SKL1NfVv/0DD229EC-346C-495C-B9C7-2F7A553A312C.jpg" , "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg"], nhacNen: "https://files.catbox.moe/a4oaaz.mp3" },
+            { hoTen: "Nguyễn Danh Cầu", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Đặng Nguyên Bảo Châu", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Cao Viết Cường", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Ngọc Diệp", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Sỹ Bảo Đăng", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Hữu Đại Hảo", bietDanh: "em hai của lớp", anhDaiDien: "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg", ngaySinh: "08/12/2012", theChat: "1m60 41kg", diemManh: "dễ gần, hoà dồng,loli con, em hai của lớp, trêu nhiều quá dễ giận ", caTinh: "thủ môn hay nhưng lùn, vua đạo lí ", anhNen: "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg", albumAnh: ["https://i.postimg.cc/7Lj80hw5/D5FBF4B5-6660-4492-A0FD-154EC616EC97.jpg" , "https://i.postimg.cc/8P42wtNx/04668BA3-B5C6-4732-BF9C-BA808DF39F33.jpg" , "https://i.postimg.cc/SRrvTxFy/5A5AFCC3-6103-4314-886A-E6F02BB22BC2.jpg" , "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg" , "https://i.postimg.cc/MHd903Vm/FC21D735-498D-4CAC-BE35-823FBB4C962B.jpg" , "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg" , "https://i.postimg.cc/K8K0LNzn/BBAEC54F-5BF7-4B8D-8232-4F8676B16ADF.jpg"], nhacNen: "https://files.catbox.moe/dup7xu.mp3" },
+            { hoTen: "Lê Harper", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Duy Nam Khang", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Đăng Khôi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Phan Gia Long", bietDanh: "Á Vương Check Map", anhDaiDien: "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg", ngaySinh: "09/11/2012", theChat: "1m65 48kg ", diemManh: "năng nổ, thích đá bóng, ngắm gái, lọ", caTinh: "không bao giờ để mình chịu thiệt trước thầy cô, mạnh mẽ, đôi lúc tính cách hay bất ổn ", anhNen: "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg", albumAnh: ["https://i.postimg.cc/dVcxP0K2/8E69E8D6-AAEF-404F-852F-35EE3078E93B.jpg" , "https://i.postimg.cc/3RNLC4gv/87643541-92E6-4185-996E-0242BE7698F1.jpg" , "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg" , "https://i.postimg.cc/kGBgmcWm/3FAA4E62-7C5E-4EB9-9D07-133CEFFA31AB.jpg" , "https://i.postimg.cc/5y62V38j/A15C2284-E2FC-4D40-9842-3CDA54713555.jpg" , "https://i.postimg.cc/D08wTg10/604884F0-0212-4EE5-8688-904DB8A5C6E9.jpg"], nhacNen: "https://files.catbox.moe/yv3kc6.mp3" },
+            { hoTen: "Nguyễn Thị Trà My", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Phan Thảo My", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Dương Bảo Ngọc", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Võ Thị Hồng Ngọc", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Lê Nguyễn Long Nhật", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Thị Yến Nhi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Lê Thị Hồng Nhung", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Phan Thục Như", bietDanh: "", anhDaiDien: "https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg", ngaySinh: "07/12/2012", theChat: "1m55 45kg", diemManh: "", caTinh: "", anhNen: "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg", albumAnh: ["https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg" , "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg" , "https://i.postimg.cc/B6G1CdWh/A6284EC2-F012-4547-B88C-80A839A277C1.jpg" , "https://i.postimg.cc/cHN8cVqT/C15C8E09-5637-4C4C-8553-2D8C8A483A9C.jpg"], nhacNen: "https://files.catbox.moe/hkyc1s.mp3" },
+            { hoTen: "Trần Nam Phong", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Hà Phương", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Hoàng Mạnh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Hoàng Minh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Anh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Võ Anh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Nguyễn Tú Quỳnh", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Hải Tài", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Đinh Ngọc Thắng", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Phan Hoàng Thiên", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Kiều Văn Thìn", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Thị Cẩm Tú", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Lâm Thục Uyên", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Tăng Hiền Vi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Tâm", bietDanh: "Giáo Viên Chủ Nhiệm", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" }
+        ];
+
+        // --- XỬ LÝ KHI BẤM NÚT "ĐÃ HIỂU" TẠI POPUP ---
+        function acceptIntro() {
+            const popup = document.getElementById('intro-popup');
+            const loginScreen = document.getElementById('login-screen');
+            const audioPlayer = document.getElementById('audioPlayer');
+
+            // Ẩn popup
+            popup.style.opacity = '0';
+            setTimeout(() => {
+                popup.style.display = 'none';
+                
+                // Hiện màn hình nhập tên
+                loginScreen.style.display = 'block';
+                setTimeout(() => {
+                    loginScreen.style.opacity = '1';
+                    loginScreen.style.transform = 'translateY(0)';
+                }, 50);
+            }, 500);
+
+            // Bật nhạc nền chung ngay lập tức nhờ người dùng đã click
+            if (LINK_NHAC_CHUNG !== "") {
+                audioPlayer.src = LINK_NHAC_CHUNG;
+                audioPlayer.play().catch(e => console.log("Lỗi phát nhạc:", e));
+            }
+        }
+
+        // --- XỬ LÝ KHI NHẤN KHÁM PHÁ ---
+        function handleLogin() {
+            const inputVal = document.getElementById('nameInput').value.trim().toLowerCase();
+            
+            if (!inputVal) {
+                alert("Vui lòng nhập họ và tên của bạn nhé!");
+                return;
+            }
+
+            const matchedUser = classDatabase.find(user => user.hoTen.toLowerCase() === inputVal);
+
+            if (matchedUser) {
+                // Đổ dữ liệu vào màn hình Profile
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(matchedUser.hoTen)}&background=1f122b&color=fff&size=200`;
+                document.getElementById('userAvatar').src = matchedUser.anhDaiDien || defaultAvatar;
+                document.getElementById('userName').innerText = matchedUser.hoTen;
+                
+                const userTag = document.getElementById('userTag');
+                if (matchedUser.bietDanh) {
+                    userTag.innerText = matchedUser.bietDanh;
+                    userTag.style.display = 'block';
+                } else {
+                    userTag.style.display = 'none';
+                }
+
+                const userDob = document.getElementById('userDob');
+                if (matchedUser.ngaySinh) {
+                    userDob.innerHTML = `🎂 ${matchedUser.ngaySinh}`;
+                    userDob.style.display = 'inline-block';
+                } else {
+                    userDob.style.display = 'none';
+                }
+
+                const userPhysical = document.getElementById('userPhysical');
+                if (matchedUser.theChat) {
+                    userPhysical.innerHTML = `📏 ${matchedUser.theChat}`;
+                    userPhysical.style.display = 'inline-block';
+                } else {
+                    userPhysical.style.display = 'none';
+                }
+
+                document.getElementById('userStrengths').innerText = matchedUser.diemManh || "Đang cập nhật thông tin...";
+                document.getElementById('userPersonality').innerText = matchedUser.caTinh || "Đang cập nhật thông tin...";
+
+                const albumContainer = document.getElementById('userAlbum');
+                albumContainer.innerHTML = ''; 
+                if (matchedUser.albumAnh && matchedUser.albumAnh.length > 0) {
+                    matchedUser.albumAnh.forEach(linkImg => {
+                        if (linkImg.trim() !== "") {
+                            const imgElement = document.createElement('img');
+                            imgElement.src = linkImg;
+                            albumContainer.appendChild(imgElement);
+                        }
+                    });
+                } else {
+                    albumContainer.innerHTML = '<p style="color: #94a3b8; font-size: 0.95rem; grid-column: span 2; text-align: center; font-style: italic;">Chưa có bức ảnh kỷ niệm nào.</p>';
+                }
+
+                // Xử lý nền riêng
+                const profileScreen = document.getElementById('profile-screen');
+                if(matchedUser.anhNen && matchedUser.anhNen !== "") {
+                    profileScreen.style.background = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${matchedUser.anhNen}')`;
+                    profileScreen.style.backgroundSize = 'cover';
+                    profileScreen.style.backgroundPosition = 'center';
+                } else {
+                    profileScreen.style.background = 'rgba(255, 255, 255, 0.03)';
+                }
+
+                // Đổi chữ "Chào mừng" cho màn hình Loading
+                document.getElementById('welcome-text').innerText = `Chào mừng\n${matchedUser.hoTen}`;
+
+                // Kích hoạt nhạc chạy ngầm luôn từ lúc này
+                const audioPlayer = document.getElementById('audioPlayer');
+                if (matchedUser.nhacNen && matchedUser.nhacNen.trim() !== "") {
+                    audioPlayer.src = matchedUser.nhacNen;
+                    audioPlayer.play().catch(e => console.log("Cần tương tác"));
+                } else {
+                    if (LINK_NHAC_CHUNG !== "") {
+                        audioPlayer.src = LINK_NHAC_CHUNG;
+                        audioPlayer.play().catch(e => console.log("Cần tương tác"));
+                    } else {
+                        audioPlayer.pause(); 
+                    }
+                }
+
+                // --- HIỆU ỨNG CHUYỂN CẢNH LOADING ---
+                const loginScreen = document.getElementById('login-screen');
+                const loadingScreen = document.getElementById('loading-screen');
+                
+                // B1: Ẩn màn hình nhập tên
+                loginScreen.style.opacity = '0';
+                loginScreen.style.transform = 'translateY(-20px)';
+                
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    
+                    // B2: Mở màn hình Loading dần lên (Tạo độ delay load nhạc)
+                    loadingScreen.style.display = 'block';
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '1';
+                        loadingScreen.style.transform = 'translateY(0)';
+                    }, 50);
+
+                    // B3: Đợi 2.5 giây cho nhạc load và tạo cảm giác hồi hộp, sau đó ẩn Loading
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        loadingScreen.style.transform = 'translateY(-10px)';
+                        
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                            
+                            // B4: Hiện màn hình Profile
+                            profileScreen.style.display = 'block';
+                            setTimeout(() => {
+                                profileScreen.style.opacity = '1';
+                                profileScreen.style.transform = 'translateY(0)';
+                            }, 50);
+                        }, 500); // Thời gian chờ fade-out của loading
+
+                    }, 2500); // 2.5 giây thời gian Loading
+
+                }, 400); // Thời gian chờ fade-out của Login
+
+            } else {
+                alert("Bạn nhập sai tên rồi! (Ví dụ: Nguyễn Hoàng Gia Bảo) hoặc liên hệ Admin LNHAT để cập nhật nhé!");
+            }
+        }
+
+        // --- QUAY LẠI TỪ PROFILE VỀ TRANG NHẬP TÊN ---
+        function goBack() {
+            const loginScreen = document.getElementById('login-screen');
+            const profileScreen = document.getElementById('profile-screen');
+
+            const audioPlayer = document.getElementById('audioPlayer');
+            if(LINK_NHAC_CHUNG !== "") {
+                audioPlayer.src = LINK_NHAC_CHUNG;
+                audioPlayer.play().catch(e => console.log("Cần tương tác"));
+            } else {
+                audioPlayer.pause();
+                audioPlayer.src = "";
+            }
+
+            profileScreen.style.opacity = '0';
+            profileScreen.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                profileScreen.style.display = 'none';
+                loginScreen.style.display = 'block';
+                setTimeout(() => {
+                    loginScreen.style.opacity = '1';
+                    loginScreen.style.transform = 'translateY(0)';
+                    document.getElementById('nameInput').value = ''; 
+                }, 50);
+            }, 400);
+        }
+
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+    </script>
+</body>
+</html>
