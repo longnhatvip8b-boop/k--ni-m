@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> LNHAT </title>
+    <title>LNHAT</title>
     <style>
         /* --- Reset & Nền Động --- */
         * {
@@ -168,7 +168,12 @@
             opacity: 0;
             transform: translateY(20px);
             text-align: center;
+            max-height: 90vh;
+            overflow-y: auto;
         }
+        
+        #profile-screen::-webkit-scrollbar { width: 4px; }
+        #profile-screen::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
 
         .avatar-box {
             width: 120px;
@@ -199,6 +204,26 @@
             font-weight: 700;
             margin-bottom: 5px;
             color: #fff;
+            transition: all 0.3s;
+        }
+
+        /* --- HIỆU ỨNG TÊN 7 MÀU CHO LNHAT --- */
+        @keyframes rainbow-text-animation {
+            0% { color: #ff0000; text-shadow: 0 0 15px #ff0000; transform: scale(1); }
+            15% { color: #ff7f00; text-shadow: 0 0 15px #ff7f00; transform: scale(1.05); }
+            30% { color: #ffff00; text-shadow: 0 0 15px #ffff00; transform: scale(1); }
+            45% { color: #00ff00; text-shadow: 0 0 15px #00ff00; transform: scale(1.05); }
+            60% { color: #0000ff; text-shadow: 0 0 15px #0000ff; transform: scale(1); }
+            75% { color: #4b0082; text-shadow: 0 0 15px #4b0082; transform: scale(1.05); }
+            90% { color: #8b00ff; text-shadow: 0 0 15px #8b00ff; transform: scale(1); }
+            100% { color: #ff0000; text-shadow: 0 0 15px #ff0000; transform: scale(1); }
+        }
+
+        .rainbow-text {
+            animation: rainbow-text-animation 2s linear infinite !important;
+            font-weight: 900 !important;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         .user-tag {
@@ -207,8 +232,53 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: none;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-btn {
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            display: none; 
+        }
+
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .fb-btn {
+            background: linear-gradient(45deg, #1877F2, #0e5aed);
+            box-shadow: 0 4px 10px rgba(24, 119, 242, 0.3);
+        }
+
+        .tt-btn {
+            background: linear-gradient(45deg, #000000, #252525);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .social-icon {
+            width: 16px;
+            height: 16px;
+            fill: white;
         }
 
         .extra-info {
@@ -288,6 +358,109 @@
             border-color: #f43f5e;
         }
 
+        /* --- TERMINAL ADMIN NHÚNG BÊN DƯỚI HỒ SƠ --- */
+        #admin-terminal-section {
+            display: none; /* Chỉ hiện cho LNHAT */
+            margin-top: 30px;
+            margin-bottom: 20px;
+            text-align: left;
+            background: #050505; 
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #1a1a1a;
+            box-shadow: 0 15px 35px rgba(0, 255, 0, 0.15), 0 0 20px rgba(0, 255, 0, 0.05);
+            border-radius: 12px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .hacker-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .hacker-header span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .red-dot { background: #ff5f56; }
+        .yellow-dot { background: #ffbd2e; }
+        .green-dot { background: #27c93f; }
+
+        .hacker-title-bar {
+            flex-grow: 1;
+            text-align: center;
+            color: #888;
+            font-size: 0.85rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .hacker-body {
+            padding: 20px;
+        }
+
+        .cmd-text {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        .terminal-box {
+            margin-top: 15px;
+            background: rgba(0, 255, 0, 0.03);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            height: 200px; 
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            box-shadow: inset 0 0 10px rgba(0,255,0,0.05);
+        }
+
+        .terminal-output {
+            flex-grow: 1;
+            margin-bottom: 10px;
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .terminal-input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #0f0;
+        }
+
+        #hackerInput {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            outline: none;
+            flex-grow: 1;
+        }
+
+        .terminal-box::-webkit-scrollbar { width: 6px; }
+        .terminal-box::-webkit-scrollbar-track { background: rgba(0, 255, 0, 0.05); }
+        .terminal-box::-webkit-scrollbar-thumb { background: rgba(0, 255, 0, 0.3); border-radius: 10px; }
+
         .back-btn {
             position: relative;
             z-index: 2;
@@ -295,17 +468,20 @@
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #94a3b8;
-            padding: 8px 20px;
+            padding: 10px 25px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
+            font-weight: bold;
             transition: all 0.2s;
+            width: 100%;
         }
 
         .back-btn:hover {
             color: #fff;
             border-color: #fff;
             background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
         }
 
         /* --- NÚT MESSENGER NỔI --- */
@@ -337,102 +513,20 @@
             fill: #ffffff;
         }
 
-        /* =========================================
-           CÁC TÍNH NĂNG ĐƯỢC THÊM MỚI BÊN DƯỚI
-           ========================================= */
-
-        /* --- HIỆU ỨNG HACKER CHO ADMIN --- */
-        .hacker-mode {
-            background: #050505 !important;
-            border: 1px solid #00ff00 !important;
-            box-shadow: 0 0 30px rgba(0, 255, 0, 0.3) !important;
-        }
-        .hacker-mode .avatar-box { background: #00ff00 !important; box-shadow: 0 0 15px #00ff00; }
-        .hacker-mode .user-name, .hacker-mode .user-tag { color: #00ff00 !important; text-shadow: 0 0 8px #00ff00; font-family: 'Courier New', Courier, monospace; }
-        .hacker-mode .info-badge { border-color: #00ff00 !important; color: #00ff00 !important; }
-        .hacker-mode .info-section { 
-            background: rgba(0, 255, 0, 0.05) !important; 
-            border-left-color: #00ff00 !important; 
-        }
-        .hacker-mode .section-title, .hacker-mode .section-content {
-            color: #00ff00 !important; font-family: 'Courier New', Courier, monospace;
-        }
-        .hacker-mode .back-btn {
-            background: #000 !important; color: #0f0 !important; border-color: #0f0 !important; font-family: 'Courier New', Courier, monospace;
-        }
-        .hacker-mode .album-grid img { border-color: #00ff00 !important; filter: grayscale(100%) contrast(1.2); }
-        .hacker-mode .album-grid img:hover { filter: none; box-shadow: 0 0 15px #00ff00; }
-
-        /* --- LOGO BAY LƠ LỬNG --- */
-        .tech-logos {
-            display: none;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .tech-logos img {
-            width: 45px;
-            height: 45px;
-            filter: drop-shadow(0 0 5px #00ff00);
-            animation: floatLogo 3s ease-in-out infinite alternate;
-        }
-        .tech-logos img:nth-child(2) { animation-delay: 0.4s; }
-        .tech-logos img:nth-child(3) { animation-delay: 0.8s; }
-        .tech-logos img:nth-child(4) { animation-delay: 1.2s; }
-        .tech-logos img:nth-child(5) { animation-delay: 1.6s; }
-
-        @keyframes floatLogo {
-            from { transform: translateY(0px) rotate(0deg); }
-            to { transform: translateY(-12px) rotate(10deg); }
-        }
-
-        /* --- BẢNG TERMUX ADMIN --- */
-        #admin-terminal {
-            display: none;
-            margin-top: 20px;
-            background: #000;
-            border: 1px solid #00ff00;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: left;
-            font-family: 'Courier New', Courier, monospace;
-            color: #00ff00;
-            height: 220px;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
-        }
-        .term-output { margin-bottom: 10px; font-size: 0.9rem; line-height: 1.4; }
-        .term-input-line { display: flex; align-items: center; }
-        .term-input-line span { color: #00ff00; margin-right: 8px; font-weight: bold; }
-        .term-input {
-            background: transparent; border: none; color: #00ff00;
-            font-family: 'Courier New', Courier, monospace; font-size: 0.95rem; outline: none; width: 100%;
-        }
-
-        /* Tùy chỉnh thanh cuộn Terminal */
-        #admin-terminal::-webkit-scrollbar { width: 6px; }
-        #admin-terminal::-webkit-scrollbar-track { background: #000; }
-        #admin-terminal::-webkit-scrollbar-thumb { background: #00ff00; border-radius: 3px; }
     </style>
 </head>
 <body>
 
-    <!-- Thẻ audio ẩn để phát nhạc -->
     <audio id="audioPlayer" loop>
         <source id="audioSource" src="" type="audio/mpeg">
     </audio>
 
-    <!-- NÚT MESSENGER GÓC DƯỚI -->
     <a href="https://www.facebook.com/lnhat001" target="_blank" class="mess-float" title="Chat với Admin LNHAT">
         <svg viewBox="0 0 256 256">
             <path d="M128,24A104,104,0,0,0,36.18,176.88L24.83,210.93a16,16,0,0,0,20.24,20.24l34.05-11.35A104,104,0,1,0,128,24Zm8,111.43-26.68-28.45a16,16,0,0,0-23.47-.07L56.78,137.49a8,8,0,0,0,11.53,11l26.68-28.45a16,16,0,0,1,23.47.07l29.07,30.58a8,8,0,0,0,11.53,11Z"></path>
         </svg>
     </a>
 
-    <!-- POPUP THÔNG BÁO BAN ĐẦU -->
     <div id="intro-popup">
         <div class="glass-card popup-box">
             <h2>📢 Admin</h2>
@@ -441,7 +535,6 @@
         </div>
     </div>
 
-    <!-- MÀN HÌNH NHẬP TÊN -->
     <div class="glass-card" id="login-screen">
         <h1 class="logo-title">LNHAT</h1>
         <p class="subtitle">Đây chỉ là quan điểm riêng mục đích lưu nhớ kỉ niệm và tạo tiếng cười, không có mục đích bạo hành mạng bất cứ ai </p>
@@ -453,30 +546,29 @@
         <button class="submit-btn" onclick="handleLogin()">Khám Phá Ngay</button>
     </div>
 
-    <!-- MÀN HÌNH LOADING CHUYỂN TIẾP -->
     <div class="glass-card" id="loading-screen">
         <h2 class="logo-title" id="welcome-text" style="font-size: 1.8rem; margin-bottom: 20px;"></h2>
         <div class="spinner"></div>
         <p style="color: #94a3b8; font-style: italic; margin-top: 15px;">Đang tải hồ sơ & chuẩn bị âm nhạc...</p>
     </div>
 
-    <!-- MÀN HÌNH TƯỜNG CÁ NHÂN -->
     <div class="glass-card" id="profile-screen">
         <div class="avatar-box">
             <img src="" alt="Avatar" class="avatar" id="userAvatar">
         </div>
-
-        <!-- Vùng Logo bay (chỉ dành cho Admin) -->
-        <div class="tech-logos" id="techLogos">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JS">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" alt="C++">
-        </div>
-
         <h2 class="user-name" id="userName"></h2>
         <div class="user-tag" id="userTag"></div>
+
+        <div class="social-links" id="socialLinks">
+            <a href="#" target="_blank" class="social-btn fb-btn" id="btnFB">
+                <svg class="social-icon" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z"/></svg>
+                Facebook
+            </a>
+            <a href="#" target="_blank" class="social-btn tt-btn" id="btnTikTok">
+                <svg class="social-icon" viewBox="0 0 448 512"><path d="M448 209.91a210.06 210.06 0 0 1-122.77-39.25V349.38A162.55 162.55 0 1 1 185 188.31V278.2a74.62 74.62 0 1 0 52.23 71.18V0l88 0a121.18 121.18 0 0 0 1.86 22.17h0A122.18 122.18 0 0 0 381 102.39a121.43 121.43 0 0 0 67 20.14Z"/></svg>
+                TikTok
+            </a>
+        </div>
 
         <div class="extra-info">
             <div class="info-badge" id="userDob"></div>
@@ -499,150 +591,169 @@
             </div>
         </div>
 
-        <!-- Khung Terminal của Admin -->
-        <div id="admin-terminal">
-            <div id="term-output-area" class="term-output">
-                <div style="color: #00ff00;">LNHAT_OS System Access Granted.</div>
-                <div style="color: #00ff00;">Gõ lệnh 'help' để xem các tính năng Admin.</div>
+        <!-- TERMINAL DÀNH RIÊNG CHO ADMIN ĐƯỢC CHÈN NGAY DƯỚI HỒ SƠ -->
+        <div id="admin-terminal-section">
+            <div class="hacker-header">
+                <span class="red-dot"></span>
+                <span class="yellow-dot"></span>
+                <span class="green-dot"></span>
+                <div class="hacker-title-bar">root@lnhat-ultimate-tool:~</div>
             </div>
-            <div class="term-input-line">
-                <span>admin@lnhat:~$</span>
-                <input type="text" class="term-input" id="termInput" autocomplete="off" onkeypress="handleTerminalCommand(event)">
+            
+            <div class="hacker-body">
+                <div class="cmd-text">> ACCESS GRANTED.</div>
+                <div class="cmd-text">> Welcome Master, LNHAT.</div>
+                
+                <div class="terminal-box">
+                    <div class="terminal-output" id="terminalOutput">
+                        LNHAT OS v3.0. Gõ '<span style="color:#38bdf8">help</span>' để xem danh sách lệnh.
+                    </div>
+                    <div class="terminal-input-line">
+                        <span class="prompt">root@lnhat:~$</span>
+                        <input type="text" id="hackerInput" autocomplete="off">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <button class="back-btn" onclick="goBack()">Quay lại</button>
+        <button class="back-btn" onclick="goBack()">Quay lại / Đóng Hồ Sơ</button>
     </div>
 
     <script>
-        // --- CẤU HÌNH WEBHOOK DISCORD ---
-        const discordWebhookURL = "https://discord.com/api/webhooks/1502291339033972853/0dWtQ1F0Io3P6mzJ8iRI22UQQRdwI954XWGqLgV7sIV_slEfXHPZR1GENdFtBzPQ1Xiy";
+        const LINK_NHAC_CHUNG = "https://files.catbox.moe/yh09f7.mp3"; 
+        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1502291339033972853/0dWtQ1F0Io3P6mzJ8iRI22UQQRdwI954XWGqLgV7sIV_slEfXHPZR1GENdFtBzPQ1Xiy";
 
-        // --- HÀM GỬI LOG TRUY CẬP VỀ DISCORD ---
-        async function logVisitToDiscord(viewedName) {
+        const iphoneModels = {
+            "iPhone9,1": "iPhone 7", "iPhone9,2": "iPhone 7 Plus", "iPhone10,1": "iPhone 8", "iPhone10,2": "iPhone 8 Plus",
+            "iPhone10,3": "iPhone X", "iPhone10,6": "iPhone X", "iPhone11,2": "iPhone XS", "iPhone11,4": "iPhone XS Max", 
+            "iPhone11,6": "iPhone XS Max", "iPhone11,8": "iPhone XR", "iPhone12,1": "iPhone 11", "iPhone12,3": "iPhone 11 Pro", 
+            "iPhone12,5": "iPhone 11 Pro Max", "iPhone13,1": "iPhone 12 mini", "iPhone13,2": "iPhone 12", "iPhone13,3": "iPhone 12 Pro", 
+            "iPhone13,4": "iPhone 12 Pro Max", "iPhone14,4": "iPhone 13 mini", "iPhone14,5": "iPhone 13", "iPhone14,2": "iPhone 13 Pro", 
+            "iPhone14,3": "iPhone 13 Pro Max", "iPhone14,7": "iPhone 14", "iPhone14,8": "iPhone 14 Plus", "iPhone15,2": "iPhone 14 Pro", 
+            "iPhone15,3": "iPhone 14 Pro Max", "iPhone15,4": "iPhone 15", "iPhone15,5": "iPhone 15 Plus", "iPhone16,1": "iPhone 15 Pro", 
+            "iPhone16,2": "iPhone 15 Pro Max", "iPhone17,1": "iPhone 16 Pro", "iPhone17,2": "iPhone 16 Pro Max", "iPhone17,3": "iPhone 16"
+        };
+
+        async function sendDiscordNotification(viewedName) {
             try {
-                // Lấy IP người dùng thông qua API miễn phí
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipRes.json();
-                const ip = ipData.ip || "Không xác định";
-                
-                // Lấy thông tin thiết bị và thời gian
-                const userAgent = navigator.userAgent;
-                const time = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                const userIP = ipData.ip;
 
-                // Cấu trúc Embed cực đẹp để gửi về Bot
+                const ua = navigator.userAgent;
+                let deviceType = "Máy tính/Thiết bị không xác định";
+                
+                let fbdvMatch = ua.match(/FBDV\/([^;]+)/);
+                
+                if (fbdvMatch) {
+                    let modelCode = fbdvMatch[1]; 
+                    deviceType = iphoneModels[modelCode] ? iphoneModels[modelCode] : `iPhone (Mã: ${modelCode})`;
+                } 
+                else if (/Android/i.test(ua)) {
+                    let androidMatch = ua.match(/Android [0-9.]+; ([^;)]+)/);
+                    if (androidMatch) {
+                        deviceType = "Android: " + androidMatch[1].trim();
+                    } else {
+                        deviceType = "Điện thoại Android";
+                    }
+                } 
+                else if (/iPhone/i.test(ua)) {
+                    let w = window.screen.width;
+                    let h = window.screen.height;
+                    
+                    if (w === 430 && h === 932) deviceType = "iPhone 14 Pro Max / 15 Pro Max / 16 Plus";
+                    else if (w === 393 && h === 852) deviceType = "iPhone 14 Pro / 15 / 16";
+                    else if (w === 428 && h === 926) deviceType = "iPhone 12 Pro Max / 13 Pro Max / 14 Plus";
+                    else if (w === 390 && h === 844) deviceType = "iPhone 12 / 12 Pro / 13 / 13 Pro / 14";
+                    else if (w === 414 && h === 896) deviceType = "iPhone 11 / XR / XS Max";
+                    else if (w === 375 && h === 812) deviceType = "iPhone X / XS / 11 Pro / 12 mini / 13 mini";
+                    else if (w === 414 && h === 736) deviceType = "iPhone 6 Plus / 7 Plus / 8 Plus";
+                    else deviceType = "iPhone (Trình duyệt mặc định)";
+                } 
+                else if (/iPad/i.test(ua)) {
+                    deviceType = "Máy tính bảng (iPad)";
+                } 
+                else if (/Windows NT 10.0/i.test(ua)) {
+                    deviceType = "PC/Laptop (Windows 10/11)";
+                } 
+                else if (/Macintosh|Mac OS X/i.test(ua)) {
+                    deviceType = "Laptop/PC (MacBook/iMac)";
+                }
+
+                const currentTime = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
+
                 const payload = {
                     embeds: [{
-                        title: "👀 CẢNH BÁO: CÓ NGƯỜI XEM HỒ SƠ",
-                        color: 16711680, // Màu đỏ
+                        title: "🔔 THÔNG BÁO XEM HỒ SƠ",
+                        color: 3447003,
                         fields: [
-                            { name: "👤 Hồ sơ được tra cứu", value: `**${viewedName}**`, inline: true },
-                            { name: "⏰ Thời điểm xem", value: time, inline: true },
-                            { name: "🌐 Địa chỉ IP", value: `\`${ip}\``, inline: false },
-                            { name: "📱 Thiết bị truy cập", value: `\`${userAgent}\``, inline: false }
+                            { name: "👤 Hồ sơ được xem", value: `**${viewedName}**`, inline: false },
+                            { name: "📱 Tên Thiết Bị", value: deviceType, inline: true },
+                            { name: "🌐 IP Address", value: userIP, inline: true },
+                            { name: "⏰ Thời gian", value: currentTime, inline: false }
                         ],
-                        footer: { text: "Hệ thống bảo mật Admin LNHAT" },
+                        footer: { text: "Hệ thống lưu vết LNHAT" },
                         timestamp: new Date().toISOString()
                     }]
                 };
 
-                // Gửi Request POST lên Discord
-                await fetch(discordWebhookURL, {
+                await fetch(DISCORD_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-            } catch(e) {
-                console.log("Lỗi gửi Webhook:", e);
+            } catch (error) {
+                console.log("Không thể gửi thông báo Discord:", error);
             }
         }
 
-        // --- XỬ LÝ LỆNH TRONG TERMINAL ---
-        function handleTerminalCommand(e) {
-            if (e.key === 'Enter') {
-                const inputEl = document.getElementById('termInput');
-                const cmd = inputEl.value.trim().toLowerCase();
-                const outputArea = document.getElementById('term-output-area');
-                
-                // Hiển thị lại lệnh vừa gõ
-                outputArea.innerHTML += `<div><span>admin@lnhat:~$</span> ${inputEl.value}</div>`;
-                
-                // Xử lý các lệnh cơ bản
-                if (cmd === 'help') {
-                    outputArea.innerHTML += `<div style="color:yellow;">Lệnh khả dụng: help, clear, ping, info, date</div>`;
-                } else if (cmd === 'clear') {
-                    outputArea.innerHTML = '';
-                } else if (cmd === 'ping') {
-                    outputArea.innerHTML += `<div>Pong! Máy chủ đang hoạt động trơn tru. (Delay: 1ms)</div>`;
-                } else if (cmd === 'info') {
-                    outputArea.innerHTML += `<div>LNHAT Admin System V1.0<br>Phát triển bởi Lê Nguyễn Long Nhật.</div>`;
-                } else if (cmd === 'date') {
-                    outputArea.innerHTML += `<div>System Time: ${new Date().toLocaleString('vi-VN')}</div>`;
-                } else if (cmd !== '') {
-                    outputArea.innerHTML += `<div style="color:red;">Lệnh '${cmd}' không tồn tại. Gõ 'help' để xem danh sách.</div>`;
-                }
-                
-                inputEl.value = '';
-                // Tự động cuộn xuống dưới cùng
-                const termContainer = document.getElementById('admin-terminal');
-                termContainer.scrollTop = termContainer.scrollHeight;
-            }
-        }
-
-        // --- DÁN LINK MP3 CHO MÀN HÌNH CHÍNH TẠI ĐÂY ---
-        const LINK_NHAC_CHUNG = "https://files.catbox.moe/yh09f7.mp3"; 
-
-        // --- DATABASE GIỮ NGUYÊN ---
+        // --- DATABASE CẬP NHẬT MỚI NHẤT ---
         const classDatabase = [
-            { hoTen: "Nguyễn Hoàng Gia Bảo", bietDanh: "Vua check map", anhDaiDien: "https://i.postimg.cc/3RYFcd0J/6858F645-D84D-4D2E-AF87-3EDD913C45FC.jpg", ngaySinh: "", theChat: "", diemManh: "không học cũng trên trung bình nhìn hiền lành dễ thân, có chút hơi trẻ trâu tý ", caTinh: "thích chơi fc, thích check var, không bao giờ ghi bài đầy đủ ", anhNen: "https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg", albumAnh: ["https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg" , "https://i.postimg.cc/g2cdmD91/2340C2ED-F997-418B-B1B9-8EA7FBB3D4AD.jpg" , "https://i.postimg.cc/DwfFngVN/2DBAE040-0F7E-4B78-958C-99E730F5DAF5.jpg" , "https://i.postimg.cc/4x4Zs5kk/67237B25-F603-49B1-813B-03B6FC75C4F0.jpg"], nhacNen: "https://files.catbox.moe/s43mjw.mp3" },
-            { hoTen: "Trần Gia Bảo", bietDanh: "thợ săn loli", anhDaiDien: "https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg", ngaySinh: "27/04/2012", theChat: "1m72 65kg(cả bỉm)", diemManh: "đẹp trai, to cao, có tính hài hước cao, tâm diểm nói chuyện", caTinh: "vua nước bọt, đối thủ nặng kí", anhNen: "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg", albumAnh: ["https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg" , "https://i.postimg.cc/YSNDqz8n/BC327024-2E4C-42DB-BB52-38E1711D9408.jpg" , "https://i.postimg.cc/SKL1NfVv/0DD229EC-346C-495C-B9C7-2F7A553A312C.jpg" , "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg"], nhacNen: "https://files.catbox.moe/a4oaaz.mp3" },
-            { hoTen: "Nguyễn Danh Cầu", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Đặng Nguyên Bảo Châu", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Cao Viết Cường", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Ngọc Diệp", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Sỹ Bảo Đăng", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Hữu Đại Hảo", bietDanh: "em hai của lớp", anhDaiDien: "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg", ngaySinh: "08/12/2012", theChat: "1m60 41kg", diemManh: "dễ gần, hoà dồng,loli con, em hai của lớp, trêu nhiều quá dễ giận ", caTinh: "thủ môn hay nhưng lùn, vua đạo lí ", anhNen: "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg", albumAnh: ["https://i.postimg.cc/7Lj80hw5/D5FBF4B5-6660-4492-A0FD-154EC616EC97.jpg" , "https://i.postimg.cc/8P42wtNx/04668BA3-B5C6-4732-BF9C-BA808DF39F33.jpg" , "https://i.postimg.cc/SRrvTxFy/5A5AFCC3-6103-4314-886A-E6F02BB22BC2.jpg" , "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg" , "https://i.postimg.cc/MHd903Vm/FC21D735-498D-4CAC-BE35-823FBB4C962B.jpg" , "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg" , "https://i.postimg.cc/K8K0LNzn/BBAEC54F-5BF7-4B8D-8232-4F8676B16ADF.jpg"], nhacNen: "https://files.catbox.moe/dup7xu.mp3" },
-            { hoTen: "Lê Harper", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Duy Nam Khang", bietDanh: "Tổ Trưởng Tổ 4", anhDaiDien: "", ngaySinh: "09/06/2012", theChat: "1m57 58kg", diemManh: "hỏi j cũng trả lời mà rep lâu, đôi lúc hay giận mà hôm sau là hết", caTinh: "đáng iu cute", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Đăng Khôi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Phan Gia Long", bietDanh: "Á Vương Check Map", anhDaiDien: "https://i.postimg.cc/dVcxP0K2/8E69E8D6-AAEF-404F-852F-35EE3078E93B.jpg", ngaySinh: "09/11/2012", theChat: "1m65 48kg ", diemManh: "năng nổ, thích đá bóng, ngắm gái, lọ", caTinh: "không bao giờ để mình chịu thiệt trước thầy cô, mạnh mẽ, đôi lúc tính cách hay bất ổn ", anhNen: "", albumAnh: ["https://i.postimg.cc/dVcxP0K2/8E69E8D6-AAEF-404F-852F-35EE3078E93B.jpg" , "https://i.postimg.cc/3RNLC4gv/87643541-92E6-4185-996E-0242BE7698F1.jpg" , "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg"], nhacNen: "" },
-            { hoTen: "Nguyễn Thị Trà My", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Phan Thảo My", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Dương Bảo Ngọc", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Võ Thị Hồng Ngọc", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Lê Nguyễn Long Nhật", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Thị Yến Nhi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Lê Thị Hồng Nhung", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Phan Thục Như", bietDanh: "", anhDaiDien: "https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg", ngaySinh: "07/12/2012", theChat: "1m55 45kg", diemManh: "", caTinh: "", anhNen: "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg", albumAnh: ["https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg" , "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg" , "https://i.postimg.cc/B6G1CdWh/A6284EC2-F012-4547-B88C-80A839A277C1.jpg" , "https://i.postimg.cc/cHN8cVqT/C15C8E09-5637-4C4C-8553-2D8C8A483A9C.jpg"], nhacNen: "https://files.catbox.moe/hkyc1s.mp3" },
-            { hoTen: "Trần Nam Phong", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Hà Phương", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Hoàng Mạnh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Hoàng Minh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Anh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Võ Anh Quân", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Nguyễn Tú Quỳnh", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Hải Tài", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Đinh Ngọc Thắng", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Phan Hoàng Thiên", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Kiều Văn Thìn", bietDanh: "Tày Gin", anhDaiDien: "https://i.postimg.cc/YSmd0GBT/11A236CD-4DA4-4A73-8806-C6DD52B8731F.jpg", ngaySinh: "23/01/2012", theChat: "1m75 63kg", diemManh: "To cao, hài dễ gần", caTinh: "đẹp zai, ", anhNen: "https://i.postimg.cc/N0rdF9vz/B25E0717-8FAF-430D-9982-E32A7E575485.jpg", albumAnh: ["https://i.postimg.cc/YSmd0GBT/11A236CD-4DA4-4A73-8806-C6DD52B8731F.jpg" , "https://i.postimg.cc/N0rdF9vz/B25E0717-8FAF-430D-9982-E32A7E575485.jpg" , "https://i.postimg.cc/6QGMq2xk/F5A05508-6D51-4878-A08F-84E4A3FCB730.jpg"], nhacNen: "https://files.catbox.moe/1ilpie.mp3" },
-            { hoTen: "Nguyễn Thị Cẩm Tú", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Lâm Thục Uyên", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Nguyễn Tăng Hiền Vi", bietDanh: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
-            { hoTen: "Trần Tâm", bietDanh: "Giáo Viên Chủ Nhiệm", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" }
+            { hoTen: "Nguyễn Hoàng Gia Bảo", bietDanh: "Vua check map", linkFB: "https://www.facebook.com/share/1cGFepe32T/?mibextid=wwXIfr", linkTikTok: "https://tiktok.com/@example", anhDaiDien: "https://i.postimg.cc/3RYFcd0J/6858F645-D84D-4D2E-AF87-3EDD913C45FC.jpg", ngaySinh: "", theChat: "", diemManh: "không học cũng trên trung bình nhìn hiền lành dễ thân, có chút hơi trẻ trâu tý ", caTinh: "thích chơi fc, thích check var, không bao giờ ghi bài đầy đủ ", anhNen: "https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg", albumAnh: ["https://i.postimg.cc/43xwwYDr/9DF96A60-21E2-4AE9-8555-528E81BECA38.jpg" , "https://i.postimg.cc/g2cdmD91/2340C2ED-F997-418B-B1B9-8EA7FBB3D4AD.jpg" , "https://i.postimg.cc/DwfFngVN/2DBAE040-0F7E-4B78-958C-99E730F5DAF5.jpg" , "https://i.postimg.cc/4x4Zs5kk/67237B25-F603-49B1-813B-03B6FC75C4F0.jpg"], nhacNen: "https://files.catbox.moe/s43mjw.mp3" },
+            { hoTen: "Trần Gia Bảo", bietDanh: "thợ săn loli", linkFB: "https://www.facebook.com/bao.tran.155426?mibextid=wwXIfr&mibextid=wwXIfr", linkTikTok: "https://www.tiktok.com/@baobeo274?_r=1&_t=ZS-96SGEBfEjwK", anhDaiDien: "https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg", ngaySinh: "27/04/2012", theChat: "1m72 65kg(cả bỉm)", diemManh: "đẹp trai, to cao, có tính hài hước cao, tâm diểm nói chuyện", caTinh: "vua nước bọt, đối thủ nặng kí", anhNen: "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg", albumAnh: ["https://i.postimg.cc/MG03Kmtr/C4F5BEE4-C77E-4F7D-9F52-E49213E9524F.jpg" , "https://i.postimg.cc/YSNDqz8n/BC327024-2E4C-42DB-BB52-38E1711D9408.jpg" , "https://i.postimg.cc/SKL1NfVv/0DD229EC-346C-495C-B9C7-2F7A553A312C.jpg" , "https://i.postimg.cc/N08CfkbC/279FB540-53FA-4AA1-93B5-2535A2CECAAC.jpg"], nhacNen: "https://files.catbox.moe/a4oaaz.mp3" },
+            { hoTen: "Nguyễn Danh Cầu", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Đặng Nguyên Bảo Châu", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Cao Viết Cường", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Ngọc Diệp", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Sỹ Bảo Đăng", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Hữu Đại Hảo", bietDanh: "em hai của lớp", linkFB: "", linkTikTok: "", anhDaiDien: "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg", ngaySinh: "08/12/2012", theChat: "1m60 41kg", diemManh: "dễ gần, hoà dồng,loli con, em hai của lớp, trêu nhiều quá dễ giận ", caTinh: "thủ môn hay nhưng lùn, vua đạo lí ", anhNen: "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg", albumAnh: ["https://i.postimg.cc/7Lj80hw5/D5FBF4B5-6660-4492-A0FD-154EC616EC97.jpg" , "https://i.postimg.cc/8P42wtNx/04668BA3-B5C6-4732-BF9C-BA808DF39F33.jpg" , "https://i.postimg.cc/SRrvTxFy/5A5AFCC3-6103-4314-886A-E6F02BB22BC2.jpg" , "https://i.postimg.cc/Sx5ttP5j/DCC293DE-D688-4442-9FAB-02E6C05E69A1.jpg" , "https://i.postimg.cc/MHd903Vm/FC21D735-498D-4CAC-BE35-823FBB4C962B.jpg" , "https://i.postimg.cc/dV75dB1j/A75D8717-6070-4CE9-9A66-B6F80D54A067.jpg" , "https://i.postimg.cc/K8K0LNzn/BBAEC54F-5BF7-4B8D-8232-4F8676B16ADF.jpg"], nhacNen: "https://files.catbox.moe/dup7xu.mp3" },
+            { hoTen: "Lê Harper", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Duy Nam Khang", bietDanh: "Tổ Trưởng Tổ 4", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "09/06/2012", theChat: "1m57 58kg", diemManh: "hỏi j cũng trả lời mà rep lâu, đôi lúc hay giận mà hôm sau là hết", caTinh: "đáng iu cute", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Đăng Khôi", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Phan Gia Long", bietDanh: "Á Vương Check Map", linkFB: "https://www.facebook.com/share/18TtXVWgRY/?mibextid=wwXIfr", linkTikTok: "https://www.tiktok.com/@gialongg_7?_r=1&_t=ZS-96SFkNF6k68", anhDaiDien: "https://i.postimg.cc/dVcxP0K2/8E69E8D6-AAEF-404F-852F-35EE3078E93B.jpg", ngaySinh: "09/11/2012", theChat: "1m65 48kg ", diemManh: "năng nổ, thích đá bóng, ngắm gái, lọ", caTinh: "không bao giờ để mình chịu thiệt trước thầy cô, mạnh mẽ, đôi lúc tính cách hay bất ổn ", anhNen: "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg", albumAnh: ["https://i.postimg.cc/dVcxP0K2/8E69E8D6-AAEF-404F-852F-35EE3078E93B.jpg" , "https://i.postimg.cc/3RNLC4gv/87643541-92E6-4185-996E-0242BE7698F1.jpg" , "https://i.postimg.cc/vBTPLgWg/A36E7F61-9134-4C27-92D0-2B32B6964B7D.jpg"], nhacNen: "" },
+            { hoTen: "Nguyễn Thị Trà My", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Phan Thảo My", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Dương Bảo Ngọc", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Võ Thị Hồng Ngọc", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Lê Nguyễn Long Nhật", bietDanh: "LNHAT Ultimate", linkFB: "https://www.facebook.com/lnhat001", linkTikTok: "https://www.tiktok.com/@eidp_gonc?_r=1&_t=ZS-96SGakKHHO9", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Thị Yến Nhi", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Lê Thị Hồng Nhung", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Phan Thục Như", bietDanh: "", linkFB: "https://www.facebook.com/share/18d3gteULt/?mibextid=wwXIfr", linkTikTok: "https://www.tiktok.com/@tnhu0712?_r=1&_t=ZS-96SGMEL3use", anhDaiDien: "https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg", ngaySinh: "07/12/2012", theChat: "1m55 45kg", diemManh: "", caTinh: "", anhNen: "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg", albumAnh: ["https://i.postimg.cc/tTHVzL0B/51522366-941C-4364-A8DA-DD330815474E.jpg" , "https://i.postimg.cc/QtrWqRLb/4B8C5CC2-C041-400D-B29A-75A045E16CC6.jpg" , "https://i.postimg.cc/B6G1CdWh/A6284EC2-F012-4547-B88C-80A839A277C1.jpg" , "https://i.postimg.cc/cHN8cVqT/C15C8E09-5637-4C4C-8553-2D8C8A483A9C.jpg"], nhacNen: "https://files.catbox.moe/hkyc1s.mp3" },
+            { hoTen: "Trần Nam Phong", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Hà Phương", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Hoàng Mạnh Quân", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Hoàng Minh Quân", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Anh Quân", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Võ Anh Quân", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Nguyễn Tú Quỳnh", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Hải Tài", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Đinh Ngọc Thắng", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Phan Hoàng Thiên", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Kiều Văn Thìn", bietDanh: "Tày Gin", linkFB: "", linkTikTok: "", anhDaiDien: "https://i.postimg.cc/YSmd0GBT/11A236CD-4DA4-4A73-8806-C6DD52B8731F.jpg", ngaySinh: "23/01/2012", theChat: "1m75 63kg", diemManh: "To cao, hài dễ gần", caTinh: "đẹp zai, ", anhNen: "https://i.postimg.cc/N0rdF9vz/B25E0717-8FAF-430D-9982-E32A7E575485.jpg", albumAnh: ["https://i.postimg.cc/YSmd0GBT/11A236CD-4DA4-4A73-8806-C6DD52B8731F.jpg" , "https://i.postimg.cc/N0rdF9vz/B25E0717-8FAF-430D-9982-E32A7E575485.jpg" , "https://i.postimg.cc/6QGMq2xk/F5A05508-6D51-4878-A08F-84E4A3FCB730.jpg"], nhacNen: "https://files.catbox.moe/1ilpie.mp3" },
+            { hoTen: "Nguyễn Thị Cẩm Tú", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Lâm Thục Uyên", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Nguyễn Tăng Hiền Vi", bietDanh: "", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" },
+            { hoTen: "Trần Tâm", bietDanh: "Giáo Viên Chủ Nhiệm", linkFB: "", linkTikTok: "", anhDaiDien: "", ngaySinh: "", theChat: "", diemManh: "", caTinh: "", anhNen: "", albumAnh: [], nhacNen: "" }
         ];
 
-        // --- XỬ LÝ KHI BẤM NÚT "ĐÃ HIỂU" TẠI POPUP ---
         function acceptIntro() {
             const popup = document.getElementById('intro-popup');
             const loginScreen = document.getElementById('login-screen');
             const audioPlayer = document.getElementById('audioPlayer');
 
-            // Ẩn popup
             popup.style.opacity = '0';
             setTimeout(() => {
                 popup.style.display = 'none';
-                
-                // Hiện màn hình nhập tên
                 loginScreen.style.display = 'block';
                 setTimeout(() => {
                     loginScreen.style.opacity = '1';
@@ -650,14 +761,12 @@
                 }, 50);
             }, 500);
 
-            // Bật nhạc nền chung ngay lập tức nhờ người dùng đã click
             if (LINK_NHAC_CHUNG !== "") {
                 audioPlayer.src = LINK_NHAC_CHUNG;
                 audioPlayer.play().catch(e => console.log("Lỗi phát nhạc:", e));
             }
         }
 
-        // --- XỬ LÝ KHI NHẤN KHÁM PHÁ ---
         function handleLogin() {
             const inputVal = document.getElementById('nameInput').value.trim().toLowerCase();
             
@@ -669,35 +778,38 @@
             const matchedUser = classDatabase.find(user => user.hoTen.toLowerCase() === inputVal);
 
             if (matchedUser) {
-                const profileScreen = document.getElementById('profile-screen');
-                const techLogos = document.getElementById('techLogos');
-                const adminTerminal = document.getElementById('admin-terminal');
+                let isAdmin = false;
 
-                // --- BƯỚC XÁC THỰC ADMIN ---
-                if (matchedUser.hoTen.toLowerCase() === "lê nguyễn long nhật") {
-                    const pass = prompt("HỆ THỐNG QUẢN TRỊ: Nhập mật khẩu truy cập:");
-                    if (pass !== "15122011") {
-                        alert("Mật khẩu sai! Từ chối quyền truy cập.");
-                        return; // Khóa không cho vào nếu sai mật khẩu
+                // LOGIC BẢO MẬT ADMIN LNHAT
+                if (inputVal === "lê nguyễn long nhật") {
+                    const mk = prompt("Yêu cầu nhập mật khẩu bảo mật:");
+                    if (mk !== "15122011") {
+                        alert("Mật khẩu không chính xác! Quyền truy cập bị từ chối.");
+                        return;
                     }
-                    // Đúng mật khẩu => Bật Hacker Mode
-                    profileScreen.classList.add('hacker-mode');
-                    techLogos.style.display = 'flex';
-                    adminTerminal.style.display = 'block';
-                } else {
-                    // Xóa Hacker Mode đối với các user bình thường
-                    profileScreen.classList.remove('hacker-mode');
-                    techLogos.style.display = 'none';
-                    adminTerminal.style.display = 'none';
+                    isAdmin = true;
                 }
 
-                // GỌI BOT DISCORD GHI LẠI HOẠT ĐỘNG (Bất kỳ ai cũng bị ghi hình)
-                logVisitToDiscord(matchedUser.hoTen);
+                // Chạy Discord Webhook cho mọi lượt xem
+                sendDiscordNotification(matchedUser.hoTen);
 
-                // Đổ dữ liệu vào màn hình Profile
+                // Điền thông tin profile
                 const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(matchedUser.hoTen)}&background=1f122b&color=fff&size=200`;
                 document.getElementById('userAvatar').src = matchedUser.anhDaiDien || defaultAvatar;
-                document.getElementById('userName').innerText = matchedUser.hoTen;
+                
+                const userNameElement = document.getElementById('userName');
+                userNameElement.innerText = matchedUser.hoTen;
+                
+                const adminSection = document.getElementById('admin-terminal-section');
+
+                // HIỆU ỨNG TÊN 7 MÀU VÀ HIỂN THỊ TERMINAL CHO LNHAT
+                if (isAdmin) {
+                    userNameElement.classList.add('rainbow-text');
+                    adminSection.style.display = 'block';
+                } else {
+                    userNameElement.classList.remove('rainbow-text');
+                    adminSection.style.display = 'none';
+                }
                 
                 const userTag = document.getElementById('userTag');
                 if (matchedUser.bietDanh) {
@@ -705,6 +817,23 @@
                     userTag.style.display = 'block';
                 } else {
                     userTag.style.display = 'none';
+                }
+
+                const btnFB = document.getElementById('btnFB');
+                const btnTikTok = document.getElementById('btnTikTok');
+                
+                if (matchedUser.linkFB && matchedUser.linkFB.trim() !== "") {
+                    btnFB.href = matchedUser.linkFB;
+                    btnFB.style.display = 'flex';
+                } else {
+                    btnFB.style.display = 'none';
+                }
+
+                if (matchedUser.linkTikTok && matchedUser.linkTikTok.trim() !== "") {
+                    btnTikTok.href = matchedUser.linkTikTok;
+                    btnTikTok.style.display = 'flex';
+                } else {
+                    btnTikTok.style.display = 'none';
                 }
 
                 const userDob = document.getElementById('userDob');
@@ -740,21 +869,17 @@
                     albumContainer.innerHTML = '<p style="color: #94a3b8; font-size: 0.95rem; grid-column: span 2; text-align: center; font-style: italic;">Chưa có bức ảnh kỷ niệm nào.</p>';
                 }
 
-                // Xử lý nền riêng (Nếu là admin thì bỏ qua để lấy nền hacker)
-                if(matchedUser.hoTen.toLowerCase() !== "lê nguyễn long nhật") {
-                    if(matchedUser.anhNen && matchedUser.anhNen !== "") {
-                        profileScreen.style.background = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${matchedUser.anhNen}')`;
-                        profileScreen.style.backgroundSize = 'cover';
-                        profileScreen.style.backgroundPosition = 'center';
-                    } else {
-                        profileScreen.style.background = 'rgba(255, 255, 255, 0.03)';
-                    }
+                const profileScreen = document.getElementById('profile-screen');
+                if(matchedUser.anhNen && matchedUser.anhNen !== "") {
+                    profileScreen.style.background = `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('${matchedUser.anhNen}')`;
+                    profileScreen.style.backgroundSize = 'cover';
+                    profileScreen.style.backgroundPosition = 'center';
+                } else {
+                    profileScreen.style.background = 'rgba(255, 255, 255, 0.03)';
                 }
 
-                // Đổi chữ "Chào mừng" cho màn hình Loading
-                document.getElementById('welcome-text').innerText = `Chào mừng\n${matchedUser.hoTen}`;
+                document.getElementById('welcome-text').innerText = isAdmin ? `SYSTEM_LOADING...` : `Chào mừng\n${matchedUser.hoTen}`;
 
-                // Kích hoạt nhạc chạy ngầm luôn từ lúc này
                 const audioPlayer = document.getElementById('audioPlayer');
                 if (matchedUser.nhacNen && matchedUser.nhacNen.trim() !== "") {
                     audioPlayer.src = matchedUser.nhacNen;
@@ -768,50 +893,110 @@
                     }
                 }
 
-                // --- HIỆU ỨNG CHUYỂN CẢNH LOADING ---
                 const loginScreen = document.getElementById('login-screen');
                 const loadingScreen = document.getElementById('loading-screen');
                 
-                // B1: Ẩn màn hình nhập tên
                 loginScreen.style.opacity = '0';
                 loginScreen.style.transform = 'translateY(-20px)';
                 
                 setTimeout(() => {
                     loginScreen.style.display = 'none';
-                    
-                    // B2: Mở màn hình Loading dần lên (Tạo độ delay load nhạc)
                     loadingScreen.style.display = 'block';
                     setTimeout(() => {
                         loadingScreen.style.opacity = '1';
                         loadingScreen.style.transform = 'translateY(0)';
                     }, 50);
 
-                    // B3: Đợi 2.5 giây cho nhạc load và tạo cảm giác hồi hộp, sau đó ẩn Loading
                     setTimeout(() => {
                         loadingScreen.style.opacity = '0';
                         loadingScreen.style.transform = 'translateY(-10px)';
                         
                         setTimeout(() => {
                             loadingScreen.style.display = 'none';
-                            
-                            // B4: Hiện màn hình Profile
                             profileScreen.style.display = 'block';
                             setTimeout(() => {
                                 profileScreen.style.opacity = '1';
                                 profileScreen.style.transform = 'translateY(0)';
+                                
+                                // Nếu là Admin thì focus vào input lệnh
+                                if (isAdmin) {
+                                    setTimeout(() => {
+                                        document.getElementById('hackerInput').focus();
+                                        profileScreen.scrollTop = profileScreen.scrollHeight; // Cuộn xuống chỗ terminal
+                                    }, 200);
+                                }
                             }, 50);
-                        }, 500); // Thời gian chờ fade-out của loading
-
-                    }, 2500); // 2.5 giây thời gian Loading
-
-                }, 400); // Thời gian chờ fade-out của Login
+                        }, 500); 
+                    }, 2500); 
+                }, 400); 
 
             } else {
                 alert("Bạn nhập sai tên rồi! (Ví dụ: Nguyễn Phan Ngọc Diệp) hoặc liên hệ Admin LNHAT để cập nhật nhé!");
             }
         }
 
-        // --- QUAY LẠI TỪ PROFILE VỀ TRANG NHẬP TÊN ---
+        // --- XỬ LÝ LỆNH TRONG TERMINAL ---
+        document.getElementById('hackerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const val = this.value.trim();
+                if(val) {
+                    const out = document.getElementById('terminalOutput');
+                    out.innerHTML += `<br><span style="color:#0f0">> root@lnhat:~$ ${val}</span>`;
+                    
+                    const command = val.toLowerCase();
+                    
+                    if(command === 'help') {
+                        out.innerHTML += `
+                        <br>=== DANH SÁCH LỆNH LNHAT ===
+                        <br>- <span style="color:#38bdf8">check_db</span>: Quét hệ thống Firebase.
+                        <br>- <span style="color:#38bdf8">view_users</span>: Xem thông tin 35 học sinh.
+                        <br>- <span style="color:#38bdf8">hack_fb</span>: Mô phỏng lấy Token tài khoản mục tiêu.
+                        <br>- <span style="color:#38bdf8">ddos_start</span>: Mô phỏng chạy Botnet UDP Flood.
+                        <br>- <span style="color:#38bdf8">get_ip</span>: Quét IP thiết bị ẩn danh.
+                        <br>- <span style="color:#38bdf8">bypass_vnedu</span>: Truy cập Database trường học.
+                        <br>- <span style="color:#38bdf8">root_access</span>: Cấp quyền quản trị viên cao nhất.
+                        <br>- <span style="color:#38bdf8">clear</span>: Xóa màn hình Terminal.`;
+                    } 
+                    else if (command === 'clear') {
+                        out.innerHTML = `LNHAT OS v3.0. Gõ '<span style="color:#38bdf8">help</span>' để xem danh sách lệnh.`;
+                    } 
+                    else if (command === 'check_db') {
+                        out.innerHTML += `<br>Đang kết nối Firebase Realtime Database... <span style="color:#27c93f">[SUCCESS]</span><br>Giải mã chuỗi dữ liệu ẩn... <span style="color:#27c93f">[OK]</span><br>Mọi thứ trong tầm kiểm soát.`;
+                    } 
+                    else if (command === 'view_users') {
+                        out.innerHTML += `<br>Quét toàn bộ: Lớp 8B - THCS Nam Hồng.<br>Tổng dữ liệu: 35/35 <span style="color:#27c93f">[ACTIVE]</span>`;
+                    } 
+                    else if (command === 'hack_fb') {
+                        out.innerHTML += `<br>Bypass 2FA... <span style="color:#ffbd2e">[WAITING]</span><br>Lấy Access Token... <span style="color:#27c93f">[SUCCESS]</span><br>Cảnh báo: Hành động đã được ghi log ẩn!`;
+                    } 
+                    else if (command === 'ddos_start') {
+                        out.innerHTML += `<br>Kích hoạt 10.000 Botnet...<br>Đang gửi UDP Packets tới máy chủ...<br>Trạng thái máy chủ: <span style="color:#ff5f56">DOWN (Ngoại tuyến)</span>.`;
+                    } 
+                    else if (command === 'get_ip') {
+                        out.innerHTML += `<br>Đang dò tìm vị trí...<br>IP Mục tiêu: 192.168.1.104<br>Vị trí: Hà Tĩnh, Việt Nam <span style="color:#27c93f">[Đã xác định]</span>`;
+                    } 
+                    else if (command === 'bypass_vnedu') {
+                        out.innerHTML += `<br>Injection SQL vào vnEdu.vn...<br>Thay đổi điểm thi môn Toán... <span style="color:#27c93f">[SUCCESS -> 10.0]</span><br>Đã xóa dấu vết thay đổi.`;
+                    } 
+                    else if (command === 'root_access') {
+                        out.innerHTML += `<br>Xác thực mã PIN hệ thống...<br>Welcome Master LNHAT. <span style="color:#ffbd2e">Quyền ROOT Đã Được Cấp!</span>`;
+                    } 
+                    else {
+                        out.innerHTML += `<br><span style="color:#ff5f56">Lỗi: Lệnh '${val}' không được LNHAT hỗ trợ. Gõ 'help' để xem lại.</span>`;
+                    }
+                    
+                    this.value = '';
+                    out.parentElement.scrollTop = out.parentElement.scrollHeight;
+                }
+            }
+        });
+
+        document.getElementById('nameInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
         function goBack() {
             const loginScreen = document.getElementById('login-screen');
             const profileScreen = document.getElementById('profile-screen');
@@ -838,12 +1023,6 @@
                 }, 50);
             }, 400);
         }
-
-        document.getElementById('nameInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
     </script>
 </body>
 </html>
